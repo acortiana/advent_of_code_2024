@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <title>Advent of Code</title>
+    </head>
+    <body>
+        <style>
+            .container {
+                position: fixed;
+                left: 0px;
+                padding: 0;
+                margin: 0;
+            }
+
+            .left-element {
+                position: fixed;
+                display: inline-block;
+                left: 0px;
+            }
+
+            .right-element {
+                position: fixed;
+                display: inline-block;
+                left: 350px;
+            }
+            .tallerTextarea {
+                height: 500px;
+                width: 500px;
+            }
+        </style>
+        <div class="container">
+            <div id="asd" class="left-element"></div>
+            <div id="output" class="right-element">
+                Paste input here to process your custom input.<br>
+                If you leave this textbox empty, default XX-input.js file will be processed.<br>
+                <label for="tallerTextarea">Custom input:</label><br>
+                <textarea id="textarea1" name="textarea1" class="tallerTextarea"></textarea>
+            </div>
+        </div>
+        <script>
+            function load_and_solve(x,y) {
+                myfilename = x.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false}).concat('-', y, '.js');
+                myinputfilename = x.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false}).concat('-input.js');
+                let textarea = document.getElementById('textarea1');
+                document.getElementById("asd").innerHTML = "calculating...";
+                if (textarea.value == "") {
+                    loaderScript(myinputfilename)
+                        .then(script => loaderScript(myfilename))
+                        .then(script => { solve()  })
+                } else {
+                    inputtext = textarea.value;
+                    loaderScript(myfilename)
+                        .then(script => { solve()  })
+                }
+                
+            }
+            function loaderScript(scriptUrl){
+                return new Promise(function (res, rej) {
+                    let script = document.createElement('script');
+                    script.src = scriptUrl;
+                    script.type = 'text/javascript';
+                    script.onerror = rej;
+                    script.async = true;
+                    script.onload = res;
+                    script.addEventListener('error',rej);
+                    script.addEventListener('load',res);
+                    document.body.appendChild(script);
+                    console.log("loading " + scriptUrl);
+                })
+            }
+            for (let i=1; i <= 25; i++) {
+                for (let ii=1; ii <= 2; ii++) {
+                    myfunc = 'a' + i.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false}).concat(ii);
+                    mytext = "Day " + i + " part " + ii;
+                    let button = document.createElement("button");
+                    button.textContent =  mytext;
+                    button.setAttribute("onclick", ('load_and_solve(' + i + ',' + ii +');'));
+                    document.getElementById('asd').appendChild(button);
+                }
+                document.getElementById('asd').appendChild(document.createElement("br"));
+            }
+        </script>
+    </body>
+</html>
